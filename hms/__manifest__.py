@@ -5,13 +5,15 @@
     'summary': 'my care mekhotek',
     'description': '',
     'category': '',
-    'depends': ['base'],
+    'depends': ['base','crm'],
     'data': [
+        'security/security.xml',
         'security/ir.model.access.csv',
         'views/doctor_views.xml',
         'views/department_views.xml',
         'views/patient_views.xml',
-        'views/patient_log_view.xml',
+         'views/res_partner_view.xml',
+        #'views/patient_log_view.xml',
         'views/menu.xml',
     ],
     'application': True
