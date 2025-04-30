@@ -14,11 +14,11 @@ class Patient(models.Model):
     cr_ratio = fields.Float('CR Ratio')
     blood_type = fields.Selection([('A+', 'A+'), ('A-', 'A-'), ('B+', 'B+'), ('B-', 'B-'), ('O+', 'O+'), ('O-', 'O-'), ('AB+', 'AB+'), ('AB-', 'AB-')], string='Blood Type')
     pcr = fields.Boolean('PCR')
-    image = fields.Image('Image')
+    image = fields.Binary('Image')
     address = fields.Text('Address')
     age = fields.Integer('Age',compute='_compute_age', store=True)
     email = fields.Char('Email', unique=True)
-
+    user_id = fields.Many2one('res.users', string="Created By", default=lambda self: self.env.user)
     department_id = fields.Many2one('hms.department', 'Department')
     doctor_ids = fields.Many2many('hms.doctors', string='Doctors')
     log_history_ids = fields.One2many('hms.patient.log', 'patient_id', string='Log History')
@@ -76,3 +76,19 @@ class Patient(models.Model):
             email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
             if not re.match(email_regex, self.email):
                 raise ValidationError('Invalid email format.')
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        if self.env.user.has_group('hms.group_hms_user'):
+            res['user_id'] = self.env.user.id
+        return res
+
+    def write(self, vals):
+        if self.env.user.has_group('hms.group_hms_user'):
+            for rec in self:
+                if rec.user_id != self.env.user:
+                    raise ValidationError("You can only modify your own patients.")
+        return super().write(vals)
+
+    def print_patient_report(self):
+        return self.env.ref('hms.patient_report').report_action(self)

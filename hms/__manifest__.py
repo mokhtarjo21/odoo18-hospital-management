@@ -14,6 +14,8 @@
         'views/patient_views.xml',
          'views/res_partner_view.xml',
         #'views/patient_log_view.xml',
+        'reports/patient_report.xml',
+        'reports/patient_template.xml',
         'views/menu.xml',
     ],
     'application': True
