@@ -2,7 +2,7 @@
     'name': 'My Hospital',
     'author': '',
     'version': '1.0',
-    'summary': 'my care mekhotek',
+    'summary': 'my care hospital',
     'description': '',
     'category': '',
     'depends': ['base','crm'],
